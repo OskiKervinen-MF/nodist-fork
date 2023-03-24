@@ -1,17 +1,17 @@
 package main
 
 import (
-  "fmt"
-  "os"
-  "os/exec"
-  "os/signal"
-  "syscall"
-  "./lib/nodist"
+	"fmt"
+	"os"
+	"os/exec"
+	"os/signal"
+	"syscall"
+
+	"./lib/nodist"
 )
 
-import . "github.com/computes/go-debug"
-
-var debug = Debug("nodist:shim-npm")
+// Use nodist.Debug to replace the no longer available go-debug package.
+var debug = nodist.Debug
 
 func main() {
   if "" == os.Getenv("NODIST_PREFIX") {

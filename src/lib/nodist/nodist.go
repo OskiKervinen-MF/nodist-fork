@@ -1,24 +1,36 @@
 package nodist
 
 import (
-  "errors"
-  "os"
-  "io/ioutil"
-  "strings"
-  "sort"
-  "encoding/json"
-  "github.com/marcelklehr/semver"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"os"
+	"sort"
+	"strings"
+
+	"github.com/marcelklehr/semver"
 )
 
-import . "github.com/computes/go-debug"
+// Define a function for verbose logging.
+var verbose = false
+func Debug(message string, args ...interface{}) {
+  if verbose {
+    var messageWithPrefix = "[nodist:shim-node] " + message
+    var messageAndArgs = append( []interface{}{ messageWithPrefix }, args... )
+    fmt.Println( messageAndArgs...)
+  }
+}
 
-var debug = Debug("nodist:shim")
+// Use nodist.Debug to replace the no longer available go-debug package.
+var debug = Debug
+
 const pathSep = string(os.PathSeparator)
 
 func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
   // Determine version spec
   var v string
-  clever := os.Getenv("NODIST_INSPECT_PACKAGEJSON"); 
+  clever := os.Getenv("NODIST_INSPECT_PACKAGEJSON");
   if v = os.Getenv("NODE_VERSION"); v != "" {
     spec = v
     debug("NODE_VERSION found:'%s'", spec)
@@ -47,7 +59,7 @@ func GetCurrentNodeVersionSpec(currentDir string) (spec string) {
 func GetCurrentNpmVersionSpec(currentDir string) (spec string) {
   // Determine version spec
   var v string
-  clever := os.Getenv("NODIST_INSPECT_PACKAGEJSON"); 
+  clever := os.Getenv("NODIST_INSPECT_PACKAGEJSON");
   if v = os.Getenv("NODIST_NPM_VERSION"); v != "" {
     spec = v
     debug("NODIST_NPM_VERSION found:'%s'", spec)

@@ -11,9 +11,8 @@ import (
 	"./lib/nodist"
 )
 
-import . "github.com/computes/go-debug"
-
-var debug = Debug("nodist:shim-node")
+// Use nodist.Debug to replace the no longer available go-debug package.
+var debug = nodist.Debug
 
 func main() {
   if "" == os.Getenv("NODIST_PREFIX") {
