@@ -1,13 +1,14 @@
 package main
 
 import (
-  "fmt"
-  "os"
-  "path/filepath"
-  "os/exec"
-  "os/signal"
-  "syscall"
-  "./lib/nodist"
+	"fmt"
+	"os"
+	"os/exec"
+	"os/signal"
+	"path/filepath"
+	"syscall"
+
+	"./lib/nodist"
 )
 
 import . "github.com/computes/go-debug"
@@ -62,14 +63,14 @@ func main() {
   var path string
   var nodebin string
 
-  path = os.Getenv("NODIST_PREFIX")+"/v"
+  path = os.Getenv("NODIST_PREFIX") + "/v"
 
   if x64 {
     path += "-x64"
   }
 
-  path = path+"/"+version
-  nodebin = path+"/node.exe"
+  path = path + "/" + version
+  nodebin = path + "/node.exe"
   debug("Going to execute the following binary: %s", nodebin)
 
   // Run node!
@@ -115,7 +116,7 @@ func getTargetDirectory() (dir string, err error) {
       return
     }
     return
-  }else{
+  } else {
     targetFile := os.Args[1]
     dir = filepath.Dir(targetFile)
 
