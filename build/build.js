@@ -11,6 +11,11 @@ var rimraf = require('rimraf');
 var tar = require('tar');
 var zlib = require('zlib');
 
+const readline = require('readline').createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 var github = require('../lib/github');
 var helper = require('../lib/build');
 var pkg = require('../package.json');
@@ -116,8 +121,8 @@ P.all([
     //first it is the bin folder lets create and populate
     console.log('Starting to stage static files');
     return P.all([
-      fs.mkdirAsync(path.join(stagingDir,'bin')),
-      fs.mkdirAsync(path.join(stagingDir,'lib')),
+      fs.mkdirAsync(path.join(stagingDir,'bin'), true),
+      fs.mkdirAsync(path.join(stagingDir,'lib'), true),
       mkdirp(path.join(stagingDir,'npm','bin'))
     ]);
   })
@@ -163,19 +168,19 @@ P.all([
   })
   .then(function(){
     console.log('Finished copying static files');
-    
+
     console.log('Compiling node shim');
     return exec('go build -o "'+stagingBin +'/node.exe" src/shim-node.go');
   })
   .then(function(){
     console.log('Done compiling node shim');
-    
+
     console.log('Compiling shim');
     return exec('go build -o "'+stagingBin +'/npm.exe" src/shim-npm.go');
   })
   .then(function() {
     console.log('Done compiling npm shim');
-    
+
     console.log('Determining latest version of node');
     return request.getAsync({
       url: 'https://nodejs.org/dist/index.json',
@@ -258,7 +263,12 @@ P.all([
   .spread(function(){
     console.log('Installation complete');
     console.log('Build Nodist.nsi');
-    return recursiveReaddir(stagingDir);
+    console.log('Pausing to let you fix the staging dir.', stagingDir);
+
+    return new Promise(resolve => readline.question("Press any key", ans => {
+      readline.close();
+      resolve( recursiveReaddir(stagingDir) );
+    }));
   })
   .then(function(files){
     files.sort(function(a,b){
