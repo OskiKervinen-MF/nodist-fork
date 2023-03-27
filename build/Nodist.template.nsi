@@ -99,7 +99,7 @@ Push "$INSTDIR\bin"
 Call AddToPath
 
 ; Detect x64
-${IF} ${RunningX64} 
+${IF} ${RunningX64}
   WriteRegExpandStr ${ENV_HKLM} NODIST_X64 "1"
 ${ENDIF}
 
@@ -268,7 +268,7 @@ Function AddToPath
 
   IntCmp $4 234 0 +4 +4 ; $4 == ERROR_MORE_DATA
     DetailPrint "AddToPath: original length $2 > ${NSIS_MAX_STRLEN}"
-    MessageBox MB_OK "PATH not updated, original length $2 > ${NSIS_MAX_STRLEN}"
+    MessageBox MB_OK "PATH not updated, original length $2 > ${NSIS_MAX_STRLEN}" /SD IDOK
     Goto done
 
   IntCmp $4 0 +5 ; $4 != NO_ERROR
@@ -296,7 +296,7 @@ Function AddToPath
   IntOp $2 $2 + 2 ; $2 = strlen(dir) + strlen(PATH) + sizeof(";")
   IntCmp $2 ${NSIS_MAX_STRLEN} +4 +4 0
     DetailPrint "AddToPath: new length $2 > ${NSIS_MAX_STRLEN}"
-    MessageBox MB_OK "PATH not updated, new length $2 > ${NSIS_MAX_STRLEN}."
+    MessageBox MB_OK "PATH not updated, new length $2 > ${NSIS_MAX_STRLEN}." /SD IDOK
     Goto done
 
   ; Append dir to PATH
